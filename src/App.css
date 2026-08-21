@@ -270,6 +270,8 @@ h1 { font-family: 'Fredoka', sans-serif; }
   .holding-name { width: 100%; }
   .holding-value { margin-left: auto; }
   .board-layout { flex-direction: column; }
+  .task-grid { grid-template-columns: 1fr; width: 100%; }
+  .ball-pit { position: static; width: 100%; }
   .distribution-row { grid-template-columns: 100px 1fr 80px; }
   .tab-bar { flex-wrap: wrap; }
 }

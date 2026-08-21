@@ -141,9 +141,6 @@ export default function TaskBoard({ user }: { user: User }) {
     <div className="board">
       <header className="board-header">
         <h1>Ev Düzeni 🏡</h1>
-        <button onClick={() => supabase.auth.signOut()} className="signout-btn">
-          Çıkış yap
-        </button>
       </header>
 
       <div className="board-layout">
