@@ -7,7 +7,7 @@ function formatTRY(n: number) {
   return n.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 })
 }
 
-export default function InvestmentsBoard({ user }: { user: User }) {
+export default function InvestmentsBoard({ user: _user }: { user: User }) {
   const [holdings, setHoldings] = useState<Holding[]>([])
   const [loading, setLoading] = useState(true)
   const [drafts, setDrafts] = useState<Record<string, { quantity: string; unit_price_try: string }>>({})
