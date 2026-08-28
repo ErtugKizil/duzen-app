@@ -55,7 +55,7 @@ export default function AnalyticsBoard({ user }: { user: User }) {
       .from('net_worth_snapshots')
       .select('*')
       .order('snapshot_date', { ascending: true })
-      .limit(30)
+      .limit(400)
     if (snaps) setSnapshots(snaps as Snapshot[])
 
     setLoading(false)
@@ -80,7 +80,15 @@ export default function AnalyticsBoard({ user }: { user: User }) {
   }, {})
   const maxGroupValue = Math.max(...Object.values(grouped), 1)
 
-  const maxSnapshot = Math.max(...snapshots.map((s) => Math.abs(s.net_worth)), 1)
+  const monthlySnapshots = Object.values(
+    snapshots.reduce<Record<string, Snapshot>>((acc, s) => {
+      const key = s.snapshot_date.slice(0, 7)
+      acc[key] = s
+      return acc
+    }, {})
+  ).sort((a, b) => a.snapshot_date.localeCompare(b.snapshot_date))
+
+  const maxSnapshot = Math.max(...monthlySnapshots.map((s) => Math.abs(s.net_worth)), 1)
 
   return (
     <div>
@@ -101,17 +109,17 @@ export default function AnalyticsBoard({ user }: { user: User }) {
 
       <div className="holdings-group">
         <h2>Net Servet Trendi</h2>
-        {snapshots.length < 2 ? (
-          <p className="empty-hint">Trend grafiği zamanla oluşacak — uygulamayı birkaç gün kullandıkça burada bir çizgi birikecek.</p>
+        {monthlySnapshots.length < 2 ? (
+          <p className="empty-hint">Trend grafiği zamanla oluşacak — birkaç ay kullandıkça burada aylık bir çizgi birikecek.</p>
         ) : (
           <div className="trend-chart">
-            {snapshots.map((s) => {
+            {monthlySnapshots.map((s) => {
               const heightPct = Math.max((Math.abs(s.net_worth) / maxSnapshot) * 100, 3)
               const isNeg = s.net_worth < 0
               return (
                 <div key={s.id} className="trend-bar-wrap" title={`${s.snapshot_date}: ${formatTRY(s.net_worth)}`}>
                   <div className={`trend-bar ${isNeg ? 'negative' : 'positive'}`} style={{ height: `${heightPct}%` }} />
-                  <span className="trend-date">{new Date(s.snapshot_date).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' })}</span>
+                  <span className="trend-date">{new Date(s.snapshot_date).toLocaleDateString('tr-TR', { month: 'short', year: '2-digit' })}</span>
                 </div>
               )
             })}
